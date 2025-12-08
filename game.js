@@ -1,5 +1,8 @@
 import platform from "platform";
-import { Character } from "./character";
+import Character from "./character.js";
+
+
+
 
 function setup() {
     createCanvas(canvasWidth, canvasHeight);
