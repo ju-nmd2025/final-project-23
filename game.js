@@ -13,7 +13,7 @@ function setup() {
 
     // Create multiple platforms
     for (let i = 0; i < 10; i++) {
-        let x = random(20, 320);
+        let x = random(20, 320); 
         let y = i * 60;
         platforms.push(new Platform(x, y, 80, 20));
     }
@@ -70,3 +70,4 @@ function keyPressed() {
         character.jump();
     }
 }
+ 
