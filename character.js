@@ -1,40 +1,72 @@
-export default class Character {
+export class Character {
+    constructor(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
 
-    	constructor(x, y, w, h) {
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
-//		this.isOnPlatForm = false;
-	}
-
-    draw() {
-       fill ("orange");
-        rect(this.x, this.y, this.w, this.h);
-
-        //ears
-        fill ("darkorange");
-        triangle (this.x, this.y, this.x + 10, this.y - 10, this.x + 20, this.y);
-        triangle (this.x + this.w - 20, this.y, this.x + this.w - 10, this.y - 10, this.x + this.w, this.y);
-
-        // eyes
-        fill ("black");
-        rect (this.x + 10, this.y + 10, 10, 10);
-        rect (this.x + 30, this.y + 10, 10, 10);
-
-        fill ("white");
-        rect (this.x + 12, this.y + 10, 5, 5);
-        rect (this.x + 32, this.y + 10, 5, 5);
-
-        fill("pink");
-        noStroke();
-        ellipse(this.x + 15, this.y + 25, 8, 4);
-        ellipse(this.x + 35, this.y + 25, 8, 4);
+        this.vy = 0;
+        this.gravity = 0.6;
+        this.onGround = false;
     }
 
-    isColliding(character, platform) {
-    if (platform.y === character.y + character.w && platform.x <= character.x + character.w) {
-        return true;
-    } else {
-        return false;
-    }}}
+    update() {
+        this.vy += this.gravity;
+        this.y += this.vy;
+
+        if (this.y + this.h > 600) { // canvas floor
+            this.y = 600 - this.h;
+            this.vy = 0;
+            this.onGround = true;
+        } else {
+            this.onGround = false;
+        }
+    }
+
+    jump() {
+        this.vy = -12;
+    }
+
+    isColliding(platform) {
+        return (
+            this.vy > 0 &&
+            this.y + this.h <= platform.y &&
+            this.y + this.h + this.vy >= platform.y &&
+            this.x + this.w > platform.x &&
+            this.x < platform.x + platform.w
+        );
+    }
+
+    draw() {
+        push();
+
+        // Body
+        fill("orange");
+        rect(this.x + this.w * 0.25, this.y + this.h * 0.4, this.w * 0.5, this.h * 0.6, 10);
+
+        // Head
+        fill("orange");
+        ellipse(this.x + this.w / 2, this.y + this.h * 0.25, this.w * 0.6, this.h * 0.5);
+
+        // Eyes
+        fill("white");
+        ellipse(this.x + this.w * 0.35, this.y + this.h * 0.25, this.w * 0.1, this.h * 0.1);
+        ellipse(this.x + this.w * 0.65, this.y + this.h * 0.25, this.w * 0.1, this.h * 0.1);
+
+        fill("black");
+        ellipse(this.x + this.w * 0.35, this.y + this.h * 0.25, this.w * 0.05, this.h * 0.05);
+        ellipse(this.x + this.w * 0.65, this.y + this.h * 0.25, this.w * 0.05, this.h * 0.05);
+
+        // Arms
+        stroke("orange");
+        strokeWeight(4);
+        line(this.x, this.y + this.h * 0.5, this.x + this.w * 0.25, this.y + this.h * 0.5); // left
+        line(this.x + this.w * 0.75, this.y + this.h * 0.5, this.x + this.w, this.y + this.h * 0.5); // right
+
+        // Legs
+        line(this.x + this.w * 0.35, this.y + this.h, this.x + this.w * 0.35, this.y + this.h + this.h * 0.25);
+        line(this.x + this.w * 0.65, this.y + this.h, this.x + this.w * 0.65, this.y + this.h + this.h * 0.25);
+
+        pop();
+    }
+}
