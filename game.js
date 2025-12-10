@@ -13,7 +13,7 @@ function setup() {
 
     // Create multiple platforms
     for (let i = 0; i < 10; i++) {
-        let x = random(20, 320); 
+        let x = random(20, 320);
         let y = i * 60;
         platforms.push(new Platform(x, y, 80, 20));
     }
@@ -25,7 +25,6 @@ function setup() {
 function draw() {
     background(200, 220, 255);
 
-    // Character update and draw
     character.update();
     character.draw();
 
@@ -37,7 +36,7 @@ function draw() {
         score += int(diff); // increase score as player rises
     }
 
-    // Draw platforms and handle collisions
+    
     for (let p of platforms) {
         p.draw();
 
@@ -45,18 +44,18 @@ function draw() {
             character.jump();
         }
 
-        // Recycle platform if it goes off bottom
+        
         if (p.y > height) {
             p.y = 0;
             p.x = random(20, 320);
         }
     }
 
-    // Draw score
+    
     fill(0);
     text("Score: " + score, 10, 10);
 
-    // Lose condition
+    
     if (character.y > height) {
         noLoop();
         fill("red");
@@ -68,6 +67,15 @@ function draw() {
 function keyPressed() {
     if (key === " " && character.onGround) {
         character.jump();
+    } else if (keyCode === LEFT_ARROW || key === "A") {
+        character.moveLeft();  // Move character left
+    } else if (keyCode === RIGHT_ARROW || key === "D") {
+        character.moveRight(); // Move character right
     }
 }
- 
+
+function keyReleased() {
+    if (keyCode === LEFT_ARROW || key === "A" || keyCode === RIGHT_ARROW || key === "D") {
+        character.stop(); 
+    }
+}
