@@ -41,7 +41,7 @@ export class Character {
     moveRight() {
         this.vx = this.speed;
     }
-// Stop horizontal movement
+    // Stop horizontal movement
     stop() {
         this.vx = 0;
     }
