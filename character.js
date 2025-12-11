@@ -5,8 +5,10 @@ export class Character {
         this.w = w;
         this.h = h;
 
+        this.vx = 0; 
         this.vy = 0;
         this.gravity = 0.6;
+        this.speed = 5; // Horizontal speed
         this.onGround = false;
     }
 
@@ -14,19 +16,37 @@ export class Character {
         this.vy += this.gravity;
         this.y += this.vy;
 
-        if (this.y + this.h > 600) { // canvas floor
+        this.x += this.vx;
+
+        if (this.y + this.h > 600) {
             this.y = 600 - this.h;
             this.vy = 0;
             this.onGround = true;
-        } else {
+        } 
+        else {
             this.onGround = false;
         }
+
     }
 
-    jump() {
+   jump() {
         this.vy = -12;
     }
+    // Move left
+    moveLeft() {
+        this.vx = -this.speed; 
+    }
 
+    // Move right
+    moveRight() {
+        this.vx = this.speed;
+    }
+// Stop horizontal movement
+    stop() {
+        this.vx = 0;
+    }
+
+    // Check for collisions with platforms
     isColliding(platform) {
         return (
             this.vy > 0 &&
@@ -37,6 +57,7 @@ export class Character {
         );
     }
 
+    // character
     draw() {
         push();
 
