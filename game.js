@@ -4,6 +4,7 @@ import { Platform } from "./platform.js";
 let character;
 let platforms = [];
 let score = 0;
+let highScore = 0;
 let gameOver = false;
 
 function setup() {
@@ -38,12 +39,22 @@ function draw() {
     background(200, 220, 255);
 
     if (gameOver) {
-        fill("red");
-        textAlign(CENTER, CENTER);
-        text("Game Over", width / 2, height / 2);
-        text("Press R to Restart", width / 2, height / 2 + 40);
-        return;
+    //highest score
+    if (score > highScore) {
+        highScore = score;
     }
+
+    fill("red");
+    textAlign(CENTER, CENTER);
+    text("Game Over", width / 2, height / 2);
+    text("Press R to Restart", width / 2, height / 2 + 40);
+
+    //high score
+    fill("black");
+    text("Highest Score: " + highScore, width / 2, height / 2 + 80);
+
+    return;
+}
 
     //character update
     character.update();
@@ -72,8 +83,7 @@ function draw() {
         p.draw();
 
         //obstacle - game over
-        if (p.isObstacle) 
-            {
+        if (p.isObstacle) {
             let d = dist(
                 character.x + character.w / 2,
                 character.y + character.h / 2,
