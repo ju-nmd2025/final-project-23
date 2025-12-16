@@ -9,15 +9,25 @@ let gameOver = false;
 function setup() {
     createCanvas(400, 600);
 
+    //character
     character = new Character(200, 500, 50, 50);
 
-    platforms.push(new Platform(160, 570, 100, 20)); 
+    //starting
+    platforms.push(new Platform(160, 570, 100, 20));
     character.y = 570 - character.h;
 
+    //clouds platform
     for (let i = 0; i < 10; i++) {
         let x = random(20, 320);
         let y = i * 60;
         platforms.push(new Platform(x, y, 80, 20));
+    }
+
+    // obstacles
+    for (let i = 0; i < 2; i++) {
+        let x = random(40, 360);
+        let y = random(50, 500);
+        platforms.push(new Platform(x, y, 0, 0, true));
     }
 
     textSize(24);
@@ -25,9 +35,9 @@ function setup() {
 }
 
 function draw() {
+    background(200, 220, 255);
 
     if (gameOver) {
-        background(200, 220, 255);
         fill("red");
         textAlign(CENTER, CENTER);
         text("Game Over", width / 2, height / 2);
@@ -35,11 +45,9 @@ function draw() {
         return;
     }
 
-    background(200, 220, 255);
-
+    //character update
     character.update();
     character.draw();
-
     character.onGround = false;
 
     if (character.y < height / 2) {
@@ -49,7 +57,7 @@ function draw() {
         platforms.forEach(p => {
             p.y += diff;
 
-            if (character.isColliding(p)) {
+            if (!p.isObstacle && character.isColliding(p)) {
                 character.y = p.y - character.h;
                 character.vy = 0;
                 character.onGround = true;
@@ -59,16 +67,31 @@ function draw() {
         score += int(diff);
     }
 
+
     for (let p of platforms) {
         p.draw();
 
-        if (character.isColliding(p)) {
+        //obstacle - game over
+        if (p.isObstacle) 
+            {
+            let d = dist(
+                character.x + character.w / 2,
+                character.y + character.h / 2,
+                p.x,
+                p.y
+            );
+            if (d < 18) gameOver = true;
+        }
+
+        //platform - jump
+        if (!p.isObstacle && character.isColliding(p)) {
             character.y = p.y - character.h;
             character.vy = 0;
             character.onGround = true;
             character.jump();
         }
 
+        //reset platform
         if (p.y > height) {
             p.y = 0;
             p.x = random(20, 320);
@@ -80,14 +103,13 @@ function draw() {
     textAlign(LEFT, TOP);
     text("Score: " + score, 10, 10);
 
-    //gameover
+    //game over
     if (character.y > height + 100) {
         gameOver = true;
     }
 }
 
 function keyPressed() {
-
     if (key === "R" || key === "r") {
         restartGame();
         return;
@@ -109,20 +131,29 @@ function keyReleased() {
     }
 }
 
-//restart
+//restart game
 function restartGame() {
     score = 0;
     gameOver = false;
-
     platforms = [];
+
     character = new Character(200, 500, 50, 50);
 
+    //starting platform
     platforms.push(new Platform(160, 570, 100, 20));
     character.y = 570 - character.h;
 
+    //platform
     for (let i = 0; i < 10; i++) {
         let x = random(20, 320);
         let y = i * 60;
         platforms.push(new Platform(x, y, 80, 20));
+    }
+
+    //obstacles
+    for (let i = 0; i < 2; i++) {
+        let x = random(40, 360);
+        let y = random(50, 500);
+        platforms.push(new Platform(x, y, 0, 0, true));
     }
 }
