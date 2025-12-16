@@ -11,6 +11,9 @@ function setup() {
     // Create the character
     character = new Character(200, 500, 50, 50);
 
+    platforms.push(new Platform(160, 570, 100, 20)); 
+    character.y = 570 - character.h; // place character on top of its starting platform
+
     // Create multiple platforms
     for (let i = 0; i < 10; i++) {
         let x = random(20, 320);
@@ -28,35 +31,53 @@ function draw() {
     character.update();
     character.draw();
 
+    character.onGround = false;
+
     // Scrolling effect
     if (character.y < height / 2) {
-        let diff = (height / 2) - character.y;
+        let diff = height / 2 - character.y;
         character.y = height / 2;
-        platforms.forEach(p => p.y += diff);
-        score += int(diff); // increase score as player rises
+
+        platforms.forEach(p => {
+            p.y += diff;
+            
+            // Ensure character still collides after platforms move
+            if (character.isColliding(p)) {
+                character.y = p.y - character.h;
+                character.vy = 0;
+                character.onGround = true;
+            }
+        });
+
+        score += int(diff); // increase score as player rises above half the screen
     }
 
-    
     for (let p of platforms) {
         p.draw();
 
-        if (character.isColliding(p)) {
+         if (character.isColliding(p)) {
             character.jump();
         }
 
-        
+        if (character.isColliding(p)) {
+            character.y = p.y - character.h;
+            character.vy = 0;
+            character.onGround = true;
+        }
+
+        // Reset platforms when they move off-screen
         if (p.y > height) {
             p.y = 0;
             p.x = random(20, 320);
         }
     }
 
-    
+    // Display score
     fill(0);
     text("Score: " + score, 10, 10);
 
-    
-    if (character.y > height) {
+    // Game Over condition
+      if (character.y > height) {
         noLoop();
         fill("red");
         textAlign(CENTER, CENTER);
@@ -64,18 +85,18 @@ function draw() {
     }
 }
 
+
 function keyPressed() {
-    if (key === " " && character.onGround) {
-        character.jump();
-    } else if (keyCode === LEFT_ARROW || key === "A") {
-        character.moveLeft();  // Move character left
+
+    if (keyCode === LEFT_ARROW || key === "A") {
+        character.moveLeft();// Move character left
     } else if (keyCode === RIGHT_ARROW || key === "D") {
-        character.moveRight(); // Move character right
+        character.moveRight();// Move character right
     }
 }
 
 function keyReleased() {
     if (keyCode === LEFT_ARROW || key === "A" || keyCode === RIGHT_ARROW || key === "D") {
-        character.stop(); 
+        character.stop();
     }
 }

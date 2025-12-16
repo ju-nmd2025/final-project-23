@@ -20,15 +20,4 @@ draw() {
 
     pop(); }
 
-hits(character)
-
-{
-        return (
-            character.y + character.h >= this.y &&
-            character.y + character.h <= this.y + this.h &&
-            character.x + character.w > this.x &&
-            character.x < this.x + this.w &&
-            character.vy > 0
-        );
-}
 }

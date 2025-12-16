@@ -13,21 +13,13 @@ export class Character {
     }
 
     update() {
-        this.vy += this.gravity;
-        this.y += this.vy;
+    this.vy += this.gravity;
+    this.y += this.vy;
+    this.x += this.vx;
 
-        this.x += this.vx;
+    this.onGround = false; // You can only stand on platforms now
+}
 
-        if (this.y + this.h > 600) {
-            this.y = 600 - this.h;
-            this.vy = 0;
-            this.onGround = true;
-        } 
-        else {
-            this.onGround = false;
-        }
-
-    }
 
    jump() {
         this.vy = -12;
@@ -48,14 +40,15 @@ export class Character {
 
     // Check for collisions with platforms
     isColliding(platform) {
-        return (
-            this.vy > 0 &&
-            this.y + this.h <= platform.y &&
-            this.y + this.h + this.vy >= platform.y &&
-            this.x + this.w > platform.x &&
-            this.x < platform.x + platform.w
-        );
-    }
+    return (
+        this.vy >= 0 &&
+        this.y + this.h <= platform.y + 5 &&
+        this.y + this.h + this.vy >= platform.y &&
+        this.x + this.w > platform.x &&
+        this.x < platform.x + platform.w
+    );
+}
+
 
     // character
     draw() {
