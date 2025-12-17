@@ -8,7 +8,7 @@ export class Character {
         this.vx = 0; 
         this.vy = 0;
         this.gravity = 0.6;
-        this.speed = 5; // Horizontal speed
+        this.speed = 7; // Horizontal speed
         this.onGround = false;
     }
 
