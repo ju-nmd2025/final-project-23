@@ -90,7 +90,7 @@ function draw() {
                 p.x,
                 p.y
             );
-            if (d < 18) gameOver = true;
+            if (d < 5) gameOver = true;
         }
 
         //platform - jump
