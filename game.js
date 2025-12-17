@@ -125,9 +125,9 @@ function keyPressed() {
         return;
     }
 
-    if (keyCode === LEFT_ARROW || key === "A") {
+    if (keyCode === LEFT_ARROW || key === "A"|| key === "a") {
         character.moveLeft();
-    } else if (keyCode === RIGHT_ARROW || key === "D") {
+    } else if (keyCode === RIGHT_ARROW || key === "D"|| key === "d") {
         character.moveRight();
     }
 }
