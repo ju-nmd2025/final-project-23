@@ -1,10 +1,9 @@
-import { Character } from "./Character.js";
+import { Character } from "./character.js";
 import { Platform } from "./platform.js";
 
 let character;
 let platforms = [];
 let score = 0;
-let highScore = 0;
 let gameOver = false;
 
 function setup() {
@@ -39,28 +38,18 @@ function draw() {
     background(200, 220, 255);
 
     if (gameOver) {
-    //highest score
-    if (score > highScore) {
-        highScore = score;
+        fill("red");
+        textAlign(CENTER, CENTER);
+        text("Game Over", width / 2, height / 2);
+        text("Press R to Restart", width / 2, height / 2 + 40);
+        return;
     }
-
-    fill("red");
-    textAlign(CENTER, CENTER);
-    text("Game Over", width / 2, height / 2);
-    text("Press R to Restart", width / 2, height / 2 + 40);
-
-    //high score
-    fill("black");
-    text("Highest Score: " + highScore, width / 2, height / 2 + 80);
-
-    return;
-}
 
     //character update
     character.update();
     character.draw();
     character.onGround = false;
-
+    
     if (character.y < height / 2) {
         let diff = height / 2 - character.y;
         character.y = height / 2;
@@ -80,33 +69,38 @@ function draw() {
 
 
     for (let p of platforms) {
-        p.draw();
+    p.update();
+    p.draw();
 
-        //obstacle - game over
-        if (p.isObstacle) {
-            let d = dist(
-                character.x + character.w / 2,
-                character.y + character.h / 2,
-                p.x,
-                p.y
-            );
-            if (d < 18) gameOver = true;
-        }
+    // obstacle - game over
+    if (p.isObstacle) {
+        let d = dist(
+            character.x + character.w / 2,
+            character.y + character.h / 2,
+            p.x,
+            p.y
+        );
+        if (d < 18) gameOver = true;
+    }
 
-        //platform - jump
-        if (!p.isObstacle && character.isColliding(p)) {
-            character.y = p.y - character.h;
-            character.vy = 0;
-            character.onGround = true;
-            character.jump();
-        }
+    // platform collision
+    if (!p.isObstacle && !p.broken && character.isColliding(p)) {
+        character.y = p.y - character.h;
+        character.vy = -12;
 
-        //reset platform
-        if (p.y > height) {
-            p.y = 0;
-            p.x = random(20, 320);
+        if (p.type === "breaking") {
+            p.broken = true;
         }
     }
+
+    // reset platform
+    if (p.y > height) {
+        p.y = 0;
+        p.x = random(20, 320);
+        p.broken = false;
+    }
+}
+
 
     //score
     fill(0);
@@ -125,9 +119,9 @@ function keyPressed() {
         return;
     }
 
-    if (keyCode === LEFT_ARROW || key === "A"|| key === "a") {
+    if (keyCode === LEFT_ARROW || key === "A") {
         character.moveLeft();
-    } else if (keyCode === RIGHT_ARROW || key === "D"|| key === "d") {
+    } else if (keyCode === RIGHT_ARROW || key === "D") {
         character.moveRight();
     }
 }
@@ -157,7 +151,10 @@ function restartGame() {
     for (let i = 0; i < 10; i++) {
         let x = random(20, 320);
         let y = i * 60;
-        platforms.push(new Platform(x, y, 80, 20));
+        let types = ["normal", "moving", "breaking"];
+        let type = random(types);
+        platforms.push(new Platform(x, y, 80, 20, false, type));
+
     }
 
     //obstacles
