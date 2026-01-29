@@ -34,6 +34,8 @@ function setup() {
     textAlign(LEFT, TOP);
 }
 
+window.setup = setup;
+
 function draw() {
     background(200, 220, 255);
 
@@ -164,3 +166,7 @@ function restartGame() {
         platforms.push(new Platform(x, y, 0, 0, true));
     }
 }
+
+window.draw = draw;
+window.keyPressed = keyPressed;
+window.keyReleased = keyReleased;
