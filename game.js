@@ -5,6 +5,7 @@ let character;
 let platforms = [];
 let score = 0;
 let gameOver = false;
+let highScore = 0;
 
 function setup() {
     createCanvas(400, 600);
@@ -40,11 +41,20 @@ function draw() {
     background(200, 220, 255);
 
     if (gameOver) {
+        //highest score
+    if (score > highScore) {
+        highScore = score;
+    }
+        
         fill("red");
         textAlign(CENTER, CENTER);
         text("Game Over", width / 2, height / 2);
         text("Press R to Restart", width / 2, height / 2 + 40);
+        //high score
+        fill("black");
+        text("Highest Score: " + highScore, width / 2, height / 2 + 80);
         return;
+        
     }
 
     //character update
@@ -112,6 +122,7 @@ function draw() {
     //game over
     if (character.y > height + 100) {
         gameOver = true;
+        
     }
 }
 
